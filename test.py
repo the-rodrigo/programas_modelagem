@@ -19,18 +19,24 @@ t = range(0, 10, 1)
 # Lista para armazenar as soluções
 solucoes = []
 f = []
-tgraf = []
+t_graph: list = []
+
 for i in range(10):
     f.append(math.exp(-t[i]))
 # Resolver as EDOs para cada ponto de tempo
 for i in range(2):
+    y0 = i+1
     sol = odeint(sistema_edo, y0, t)  # Resolver a EDO no intervalo
     # y0 = sol[-1]  # Atualizar a condição inicial para o próximo intervalo
     # print(y0)
-    solucoes.extend(sol)  # Adicionar as soluções ao resultado global
+    solucoes.append(sol)  # Adicionar as soluções ao resultado global
     y0 = 2
 
-# As soluções estão armazenadas na lista solucoes
+print(len(solucoes))
 
-plt.plot(solucoes, 'ro', t, f, 'b')
+for soluc in solucoes:
+    plt.plot(t, soluc)
+
 plt.show()
+
+# As soluções estão armazenadas na lista solucoes
