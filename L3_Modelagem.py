@@ -76,7 +76,9 @@ Tcf: float = 298.5
 Tf: float = 298.15
 Cf: float = 10
 
-# Letra B
+# Número 1
+
+# Letra A
 
 T_estacionario = []
 C_estacionario = []
@@ -107,36 +109,72 @@ def dSdt(S, t):
     return [dCdt, dTdt]
 
 
-t = np.linspace(0, -10, 1000)
+def plot_trajetories(t, T0, C0, line_type='k-', label=None):
+    S0 = [C0, T0]
+    sol = odeint(dSdt, S0, t)
+
+    C_plot = sol[:, 0]
+    T_plot = sol[:, 1]
+
+    plt.plot(C_plot, T_plot, line_type, lw=1, label=label)
+
+
+def plot_separatrix(t, inf, Tee0, Cee0):
+    T0 = Tee0 + inf
+    C0 = Cee0
+    plot_trajetories(t, T0, C0, 'k--', 'Separatriz')
+
+    T0 = Tee0 - inf
+    C0 = Cee0
+    plot_trajetories(t, T0, C0, 'k--', 'Separatriz')
+
+
+t: list = np.linspace(0, -10, 1000)
 inf = 0.01
+plot_separatrix(t, inf, T_estacionario[0], C_estacionario[0])
 
-T0 = T_estacionario[0] + inf
-C0 = C_estacionario[0]
+t = np.linspace(0, 20, 1000)
+T_initial = [330, 360]
+C_initial = [9, 1]
 
-S0 = [C0, T0]
-sol = odeint(dSdt, S0, t)
+plot_trajetories(t, T_initial[0], C_initial[0], 'b-', 'Simulação Dinâmica')
 
-C_plot = sol[:, 0]
-T_plot = sol[:, 1]
+plot_trajetories(t, T_initial[1], C_initial[1], 'g-', 'Simulação Dinâmica')
 
-plt.scatter(C_estacionario, T_estacionario, color='r')
+plt.scatter(C_estacionario, T_estacionario, color='r',
+            s=15, label='Estados Estacionários')
+plt.scatter(C_initial, T_initial, color='c', s=15,
+            marker='x', label='Condição Inicial')
 
-plt.plot(C_plot, T_plot, 'k--')
-T0 = T_estacionario[0] - inf
-C0 = C_estacionario[0]
-
-S0 = [C0, T0]
-sol = odeint(dSdt, S0, t)
-
-C_plot = sol[:, 0]
-T_plot = sol[:, 1]
-
-plt.plot(C_plot, T_plot, 'k--')
-
-
+plt.legend()
 plt.ylim(300, 400)
 plt.xlim(0, 10)
 plt.xlabel('C [mol/L]')
 plt.ylabel('T [K]')
 plt.title('Plano de Fases de CxT')
 plt.show()
+
+
+# Número 2
+# Ele quer que eu resolva ou avalie a estabilidade?
+''' Aqui resolvi, mas arbitrando condição inicial
+def dXdt(X, t):
+    x1, x2 = X
+    dx1_dt = x2
+    dx2_dt = -x1 - u*x2
+    return [dx1_dt, dx2_dt]
+
+
+X0 = [10, 50]
+u = 0
+sol = odeint(dXdt, X0, t)
+
+x1_plot = sol[:, 0]
+x2_plot = sol[:, 1]
+
+plt.plot(sol)
+plt.show()
+'''
+'''
+Aqui eu verifiquei a estabilidade
+'''
