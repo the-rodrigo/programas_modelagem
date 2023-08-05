@@ -11,7 +11,8 @@ def get_C(T):
 
 
 def get_newT(T, C, Tcf):
-    return (deltaH_neg*v*k0*C*math.exp(-E/(R*T)) + hA*Tcf + q*Cp*Tf)/(q*Cp + hA)
+    return (deltaH_neg*v*k0*C*math.exp(-E/(R*T)) + hA*Tcf
+            + q*Cp*Tf)/(q*Cp + hA)
 
 
 q: float = 0.1
@@ -43,7 +44,7 @@ for j, temperature in enumerate(Tcf):
     while error > tolerance and i <= 10000:
         C.append(get_C(T[i]))
         T.append(get_newT(T[i], C[i], temperature))
-        error = abs((T[i+1]-T[i])/T[i])
+        error = np.absolute((T[i+1]-T[i])/T[i])
         i += 1
 
     TEE = T[-1]

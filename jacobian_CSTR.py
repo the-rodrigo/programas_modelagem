@@ -1,13 +1,16 @@
+import math
+
 import numpy as np
 
 
 def jacobian(C, T, q, v, k0, deltaH_neg, E, Cp, hA, R):
     J = np.zeros((2, 2))
 
-    J[0, 0] = -q/v-k0*np.exp(-E/(R*T))
-    J[0, 1] = -k0*np.exp(-E/(R*T))*(E/(R*T*T))*C
-    J[1, 0] = (deltaH_neg/Cp)*k0*np.exp(-E/(R*T))
-    J[1, 1] = -q/v+(deltaH_neg/Cp)*k0*np.exp(-E/(R*T))*(E/(R*T*T))*C-(hA/(v*Cp))
+    J[0, 0] = -q/v-k0*math.exp(-E/(R*T))
+    J[0, 1] = -k0*math.exp(-E/(R*T))*(E/(R*T*T))*C
+    J[1, 0] = (deltaH_neg/Cp)*k0*math.exp(-E/(R*T))
+    J[1, 1] = -q/v+(deltaH_neg/Cp)*k0*math.exp(-E/(R*T)) * \
+        (E/(R*T*T))*C-(hA/(v*Cp))
 
     return J
 
