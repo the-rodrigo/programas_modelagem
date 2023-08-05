@@ -2,7 +2,6 @@ import math
 
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
 from scipy.integrate import odeint
 
 
@@ -11,7 +10,8 @@ def get_Qr(T):
 
 
 def get_Qg(T):
-    return (deltaH_neg*v*q*Cf*k0*math.exp(-E/(R*T)))/(q + v*k0*math.exp(-E/(R*T)))
+    return (deltaH_neg*v*q*Cf*k0*math.exp(-E/(R*T)))/(q + v*k0 *
+                                                      math.exp(-E/(R*T)))
 
 
 def get_f(T):
@@ -23,15 +23,19 @@ def get_C(T):
 
 
 def get_df(T):
-    return deltaH_neg*v*(q**2)*Cf*k0*E*math.exp(E/(R*T))/((T**2)*((q*math.exp(E/(R*T)) + v*k0)**2)) - q*Cp - hA
+    return deltaH_neg*v*(q**2) *\
+        Cf*k0*E*math.exp(E/(R*T)) / \
+        ((T**2)*((q*math.exp(E/(R*T)) + v*k0)**2)) - q*Cp - hA
 
 
 def get_newT(T, C):
-    return (deltaH_neg*v*k0*C*math.exp(-E/(R*T)) + hA*Tcf + q*Cp*Tf)/(q*Cp + hA)
+    return (deltaH_neg*v*k0*C*math.exp(-E/(R*T)) + hA*Tcf + q*Cp*Tf) /\
+        (q*Cp + hA)
 
 
 def get_Tcf(q, T):
-    return T + v*(q*Cp*(T - Tf)/hA - deltaH_neg*k0*q*Cf/(q + k0*math.exp(-E/(R*T)))*math.exp(-E/(R*T))/hA)
+    return T + v*(q*Cp*(T - Tf)/hA - deltaH_neg *
+                  k0*q*Cf/(q + k0*math.exp(-E/(R*T)))*math.exp(-E/(R*T))/hA)
 
 
 def set_SR(tolerance, T0):
@@ -129,7 +133,7 @@ def plot_separatrix(t, inf, Tee0, Cee0):
     plot_trajetories(t, T0, C0, 'k--', 'Separatriz')
 
 
-t: list = np.linspace(0, -10, 1000)
+t = np.linspace(0, -10, 1000)
 inf = 0.01
 plot_separatrix(t, inf, T_estacionario[0], C_estacionario[0])
 
@@ -144,7 +148,7 @@ plot_trajetories(t, T_initial[1], C_initial[1], 'g-', 'Simulação Dinâmica')
 plt.scatter(C_estacionario, T_estacionario, color='r',
             s=15, label='Estados Estacionários')
 plt.scatter(C_initial, T_initial, color='c', s=15,
-            marker='x', label='Condição Inicial')
+            marker='x', label='Condição Inicial')  # type: ignore
 
 plt.legend()
 plt.ylim(300, 400)

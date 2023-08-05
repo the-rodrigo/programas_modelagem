@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
 from scipy.integrate import odeint
 
 
@@ -14,7 +13,8 @@ def dCdt(C, t):
     dCi_dt.append(dC1_dt)
     for i in range(1, nodes-1):
         dCi_dt.append(C[i-1]*(1/(Pe*dx**2) + (1+R)/(2*dx)) - C[i] *
-                      (Da + 2/(Pe*dx**2)) + C[i+1]*(1/(Pe*dx**2) - (1+R)/(2*dx)))
+                      (Da + 2/(Pe*dx**2)) + C[i+1]*(1/(Pe*dx**2) -
+                                                    (1+R)/(2*dx)))
     dCn_dt = C[nodes-2]*(1/(Pe*dx**2) + (1+R)/(2*dx)) - \
         C[nodes-1]*(Da + 1/(Pe*dx**2) + (1+R)/(2*dx))
     dCi_dt.append(dCn_dt)

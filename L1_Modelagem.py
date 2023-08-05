@@ -2,7 +2,6 @@ import math
 
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
 from scipy.integrate import odeint
 
 
@@ -11,7 +10,8 @@ def get_Qr(T):
 
 
 def get_Qg(T):
-    return (deltaH_neg*v*q*Cf*k0*math.exp(-E/(R*T)))/(q + v*k0*math.exp(-E/(R*T)))
+    return (deltaH_neg*v*q*Cf*k0*math.exp(-E/(R*T))) \
+        / (q + v*k0*math.exp(-E/(R*T)))
 
 
 def get_f(T):
@@ -23,15 +23,18 @@ def get_C(T):
 
 
 def get_df(T):
-    return deltaH_neg*v*(q**2)*Cf*k0*E*math.exp(E/(R*T))/((T**2)*((q*math.exp(E/(R*T)) + v*k0)**2)) - q*Cp - hA
+    return deltaH_neg*v*(q**2)*Cf*k0*E*math.exp(E/(R*T))\
+        / ((T**2)*((q*math.exp(E/(R*T)) + v*k0)**2)) - q*Cp - hA
 
 
 def get_newT(T, C):
-    return (deltaH_neg*v*k0*C*math.exp(-E/(R*T)) + hA*Tcf + q*Cp*Tf)/(q*Cp + hA)
+    return (deltaH_neg*v*k0*C*math.exp(-E/(R*T))
+            + hA*Tcf + q*Cp*Tf)/(q*Cp + hA)
 
 
 def get_Tcf(q, T):
-    return T + v*(q*Cp*(T - Tf)/hA - deltaH_neg*k0*q*Cf/(q + k0*math.exp(-E/(R*T)))*math.exp(-E/(R*T))/hA)
+    return T + v*(q*Cp*(T - Tf)/hA - deltaH_neg*k0*q*Cf
+                  / (q + k0*math.exp(-E/(R*T)))*math.exp(-E/(R*T))/hA)
 
 # Parâmetros
 
@@ -60,7 +63,7 @@ zerosQ = []
 for i, temperature in enumerate(T):
     Qr.append(get_Qr(temperature))
     Qg.append(get_Qg(temperature))
-    if abs(Qr[i] - Qg[i]) <= 5:
+    if np.abs(Qr[i] - Qg[i]) <= 5:
         zerosT.append(temperature)
         zerosQ.append(Qr[i])
 
@@ -83,59 +86,59 @@ C_estacionario = []
 
 tolerance = 10**-25
 error = 1
-T0 = 312
+T_initial = 312
 C = []
-T = [T0]
+T = [T_initial]
 i = 0
 while error > tolerance and i <= 10000:
     f = get_f(T[i])
     df = get_df(T[i])
     C.append(get_C(T[i]))
     T.append(T[i] - f/df)
-    error = abs((T[i+1]-T[i])/T[i])
+    error = np.abs((T[i+1]-T[i])/T[i])
     i += 1
 
 print(
-    f'Tee = {T[len(T)-1]:.0f}K, Cee = {C[len(C)-1]:.2f}mol/L rodando {i} iterações')
+    f'Tee = {T[-1]:.0f}K, Cee = {C[-1]:.2f}mol/L rodando {i} iterações')
 
-T_estacionario.append(T[len(T)-1])
-C_estacionario.append(C[len(C)-1])
+T_estacionario.append(T[-1])
+C_estacionario.append(C[-1])
 
 tolerance = 10**-25
 error = 1
-T0 = 337
+T_initial = 337
 C = []
-T = [T0]
+T = [T_initial]
 i = 0
 while error > tolerance and i <= 10000:
     C.append(get_C(T[i]))
     T.append(get_newT(T[i], C[i]))
-    error = abs((T[i+1]-T[i])/T[i])
+    error = np.abs((T[i+1]-T[i])/T[i])
     i += 1
 
 print(
-    f'Tee = {T[len(T)-1]:.0f}K, Cee = {C[len(C)-1]:.2f}mol/L rodando {i} iterações')
+    f'Tee = {T[-1]:.0f}K, Cee = {C[-1]:.2f}mol/L rodando {i} iterações')
 
-T_estacionario.append(T[len(T)-1])
-C_estacionario.append(C[len(C)-1])
+T_estacionario.append(T[-1])
+C_estacionario.append(C[-1])
 
 tolerance = 10**-25
 error = 1
-T0 = 367
+T_initial = 367
 C = []
-T = [T0]
+T = [T_initial]
 i = 0
 while error > tolerance and i <= 10000:
     C.append(get_C(T[i]))
     T.append(get_newT(T[i], C[i]))
-    error = abs((T[i+1]-T[i])/T[i])
+    error = np.abs((T[i+1]-T[i])/T[i])
     i += 1
 
 print(
-    f'Tee = {T[len(T)-1]:.0f}K, Cee = {C[len(C)-1]:.2f}mol/L rodando {i} iterações')
+    f'Tee = {T[-1]:.0f}K, Cee = {C[-1]:.2f}mol/L rodando {i} iterações')
 
-T_estacionario.append(T[len(T)-1])
-C_estacionario.append(C[len(C)-1])
+T_estacionario.append(T[-1])
+C_estacionario.append(C[-1])
 
 # Letra C
 
@@ -188,7 +191,7 @@ ax = fig.add_subplot(111, projection='3d')
 
 for flow in qv_graph:
     Tcf_graph = []
-    Cee = []
+    Cee: list = []
     i = 0
 
     for temperature in Tee:
@@ -205,8 +208,11 @@ for flow in qv_graph:
 plt.show()
 
 # Criação de dados para o gráfico 3D
-Tcf_graph_grid = Tee_grid + v*(qv_graph_grid*Cp*(Tee_grid - Tf)/hA - deltaH_neg*k0*(
-    qv_graph_grid*Cf/(qv_graph_grid + k0*np.exp(-E/(R*Tee_grid))))*np.exp(-E/(R*Tee_grid))/hA)
+Tcf_graph_grid = Tee_grid + v *\
+    (qv_graph_grid*Cp * (Tee_grid - Tf)/hA - deltaH_neg*k0*(
+        qv_graph_grid*Cf / (qv_graph_grid + k0 *
+                            np.exp(-E/(R*Tee_grid)))) *
+     np.exp(-E / (R*Tee_grid))/hA)
 
 # Criação da figura e do eixo 3D
 fig = plt.figure()
@@ -220,7 +226,8 @@ ax.set_xlabel('Eixo Tcf')
 ax.set_ylabel('Eixo q/v')
 ax.set_zlabel('Eixo Tee')
 ax.set_title(
-    'Superfície 3D formada pelas curvas S para estado estacionário variando q/V, Tcf e Tee')
+    'Superfície 3D formada pelas curvas S para estado estacionário variando\
+q/V, Tcf e Tee')
 
 # Exibição do gráfico
 plt.show()
