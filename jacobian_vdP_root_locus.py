@@ -27,14 +27,14 @@ Tf: float = 298.15
 Cf: float = 10
 
 n = 10000
-Tcf = np.linspace(300, 400, n)
-Real_1 = np.zeros(n+1)
-Imag_1 = np.zeros(n+1)
-Real_2 = np.zeros(n+1)
-Imag_2 = np.zeros(n+1)
+Tcf_vector = np.linspace(300, 400, n)
+Real_1 = np.zeros(n)
+Imag_1 = np.zeros(n)
+Real_2 = np.zeros(n)
+Imag_2 = np.zeros(n)
 J = []
 
-for j, temperature in enumerate(Tcf):
+for j, temperature in enumerate(Tcf_vector):
     tolerance = 10**-25
     error = 1
     T0 = 337
@@ -65,9 +65,9 @@ plt.plot(Real_1, Imag_1, 'r-', Real_2, Imag_2, 'b-', linewidth=1)
 plt.title('Root locus van der Pol')
 plt.xlabel('Re(λ)')
 plt.ylabel('Im(λ)')
-plt.plot(Real_1[0], Imag_1[0], 'rx', Real_1[n],
-         Imag_1[n], 'ro', linewidth=1, markersize=5)
-plt.plot(Real_2[0], Imag_2[0], 'bx', Real_2[n],
-         Imag_2[n], 'bo', linewidth=1, markersize=5)
+plt.plot(Real_1[0], Imag_1[0], 'rx', Real_1[n-1],
+         Imag_1[n-1], 'ro', linewidth=1, markersize=5)
+plt.plot(Real_2[0], Imag_2[0], 'bx', Real_2[n-1],
+         Imag_2[n-1], 'bo', linewidth=1, markersize=5)
 plt.legend(['λ_1', 'λ_2', 'Begin', 'End', 'Begin', 'End'])
 plt.show()
