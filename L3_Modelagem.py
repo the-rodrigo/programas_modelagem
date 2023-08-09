@@ -35,7 +35,7 @@ def get_newT(T, C, Tcf):
             + q*Cp*Tf)/(q*Cp + hA)
 
 
-def get_Tcf(q, T):
+def get_Tcf(T):
     return T + v*(q*Cp*(T - Tf)/hA - deltaH_neg *
                   k0*q*Cf/(q + k0*math.exp(-E/(R*T)))*math.exp(-E/(R*T))/hA)
 
@@ -164,31 +164,20 @@ plt.show()
 
 # Letra B
 
-n = 9000
-Tcf_vector = np.linspace(300, 400, n)
+n = 10000
+Tee_vector = np.linspace(300, 400, n)
+Tcf_vector = []
 Real_1 = np.ones(n)
 Imag_1 = np.ones(n)
 Real_2 = np.ones(n)
 Imag_2 = np.ones(n)
 J = []
 
-for j, temperature in enumerate(Tcf_vector):
-    tolerance = 10**-25
-    error = 1
-    T0 = 337
-    C = []
-    T = [T0]
-    i = 0
-    while error > tolerance and i <= 10000:
-        C.append(get_C(T[i]))
-        T.append(get_newT(T[i], C[i], temperature))
-        error = np.absolute((T[i+1]-T[i])/T[i])
-        i += 1
+for j, temperature in enumerate(Tee_vector):
+    CEE = get_C(temperature)
+    Tcf_vector.append(get_Tcf(temperature))
 
-    TEE = T[-1]
-    CEE = C[-1]
-
-    J = jac.jacobian(CEE, TEE, q, v, k0, deltaH_neg, E, Cp, hA, R)
+    J = jac.jacobian(CEE, temperature, q, v, k0, deltaH_neg, E, Cp, hA, R)
 
     eig_val = np.linalg.eig(J)[0]
 
@@ -211,14 +200,14 @@ plt.show()
 
 # Letra C
 
-plt.plot(Real_1, Tcf_vector, 'r-', Real_2, Tcf_vector, 'b-', linewidth=1)
+plt.plot(Tcf_vector, Real_1, 'r-', Tcf_vector, Real_2, 'b-', linewidth=1)
 plt.title('Re(λ) vs Tcf')
-plt.xlabel('Re(λ)')
-plt.ylabel('Tcf')
-plt.plot(Real_1[0], Tcf_vector[0], 'rx', Real_1[n-1],
-         Tcf_vector[n-1], 'ro', linewidth=1, markersize=5)
-plt.plot(Real_2[0], Tcf_vector[0], 'bx', Real_2[n-1],
-         Tcf_vector[n-1], 'bo', linewidth=1, markersize=5)
+plt.ylabel('Re(λ)')
+plt.xlabel('Tcf')
+plt.plot(Tcf_vector[0], Real_1[0], 'rx',
+         Tcf_vector[n-1], Real_1[n-1], 'ro', linewidth=1, markersize=5)
+plt.plot(Tcf_vector[0], Real_2[0], 'bx',
+         Tcf_vector[n-1], Real_2[n-1], 'bo', linewidth=1, markersize=5)
 plt.legend(['λ_1', 'λ_2', 'Begin', 'End', 'Begin', 'End'])
 plt.show()
 
@@ -379,10 +368,10 @@ x0_points_x2.append(x0_value[1])
 t = np.linspace(0, -10, 1000)
 P0 = [1.5, 0]
 x1_value, x2_value, x0_value = limit_cicle_unstable(P0, t)
-x1_points.append(x1_value)
-x2_points.append(x2_value)
-x0_points_x1.append(x0_value[0])
-x0_points_x2.append(x0_value[1])
+# x1_points.append(x1_value)
+# x2_points.append(x2_value)
+x0_points_x1.append(x1_value)
+x0_points_x2.append(x2_value)
 
 plt.scatter(x1_points, x2_points, color='r', s=15, label='EE')
 plt.scatter(x0_points_x1, x0_points_x2, color='c', s=35,
